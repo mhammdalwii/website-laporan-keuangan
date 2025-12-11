@@ -22,6 +22,4 @@ Route::get('/input_data', [TransactionController::class, 'create'])->name('trans
 Route::post('/input_data', [TransactionController::class, 'store'])->name('transactions.store');
 Route::get('/withdraw', [WithdrawalController::class, 'create'])->name('withdraw.create');
 Route::post('/withdraw', [WithdrawalController::class, 'store'])->name('withdraw.store');
-// Rute dasbor sekarang menunjuk ke DashboardController
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
