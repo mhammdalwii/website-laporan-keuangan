@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Input & Penarikan Dana - Vending Machine</title>
+    <title>Input Pengeluaran - Vending Machine</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,18 +95,20 @@
     <div class="mx-auto p-4 sm:p-6 lg:p-8 max-w-4xl">
         <header class="mb-10 text-center">
             <h1 class="text-4xl sm:text-5xl font-bold text-white tracking-tight">Manajemen Keuangan</h1>
-            <p class="text-gray-400 mt-3 max-w-xl mx-auto">Catat pengeluaran bahan baku dan lakukan penarikan dana dengan mudah.</p>
+            <p class="text-gray-400 mt-3 max-w-xl mx-auto">Catat pengeluaran bahan baku dengan mudah.</p>
             <a href="{{ url('/') }}" class="mt-6 inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-5 rounded-lg transition-transform transform hover:scale-105 duration-300 btn-glow">
                 <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
             </a>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- Expense Form -->
-            <main class="glass-container">
+        <div class="max-w-2xl mx-auto">
+            <main class="glass-container mb-12">
                 <h2 class="text-2xl font-bold text-white mb-6 text-center"><i class="fas fa-shopping-cart mr-2"></i> Input Pengeluaran</h2>
                 <form action="{{ route('transactions.store') }}" method="POST" class="space-y-6">
                     @csrf
+
+                    {{-- BAGIAN SELECT OPTION SUDAH DIHAPUS DI SINI --}}
+
                     <div class="relative">
                         <i class="fas fa-tag absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                         <input type="text" id="name" name="name" placeholder="Nama Item / Bahan Baku" required class="w-full input-glass pl-10">
@@ -129,46 +131,9 @@
                     </div>
                 @endif
             </main>
-
-            <!-- Withdrawal Form -->
-            <section class="glass-container">
-                <h2 class="text-2xl font-bold text-white mb-6 text-center"><i class="fas fa-university mr-2"></i> Penarikan Dana</h2>
-                 @if ($errors->any() && $errors->has('payout_error'))
-                    <div class="mt-4 bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-md">
-                        <ul>
-                            @foreach ($errors->get('payout_error') as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-                <form action="{{ route('withdraw.store') }}" method="POST" class="space-y-6">
-                    @csrf
-                    <div class="relative">
-                         <i class="fas fa-money-bill-wave absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="number" id="amount" name="amount" placeholder="Jumlah Penarikan (Rp)" required min="10000" class="w-full input-glass pl-10">
-                    </div>
-                    <div class="relative">
-                        <i class="fas fa-user absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="beneficiary_name" name="beneficiary_name" placeholder="Nama Pemilik Rekening" required class="w-full input-glass pl-10">
-                    </div>
-                    <div class="relative">
-                         <i class="fas fa-credit-card absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="beneficiary_account" name="beneficiary_account" placeholder="Nomor Rekening" required class="w-full input-glass pl-10">
-                    </div>
-                     <div class="relative">
-                         <i class="fas fa-landmark absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                        <input type="text" id="beneficiary_bank" name="beneficiary_bank" placeholder="Nama Bank (e.g., BCA, BNI)" required class="w-full input-glass pl-10">
-                    </div>
-                    <button type="submit" class="w-full btn-glow bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold py-3 px-4 rounded-lg">
-                        Ajukan Penarikan
-                    </button>
-                </form>
-            </section>
         </div>
 
-        <!-- History Section -->
-        <section class="mt-12 glass-container">
+        <section class="glass-container">
             <h2 class="text-2xl font-bold text-white mb-6">Riwayat Pengeluaran</h2>
             <div class="overflow-x-auto">
                 <table class="min-w-full divide-y divide-gray-700">
@@ -176,7 +141,6 @@
                         <tr>
                             <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-300">Item / Bahan</th>
                             <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-300 hidden sm:table-cell">Total Biaya</th>
-                            <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-300 hidden md:table-cell">Biaya Pokok (HPP)</th>
                             <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-300">Tanggal</th>
                             <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-300">Aksi</th>
                         </tr>
@@ -184,9 +148,9 @@
                     <tbody class="divide-y divide-gray-800">
                         @forelse($transactions as $transaction)
                             <tr class="hover:bg-gray-800/40 transition-colors duration-200">
-                                <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-300">{{ $transaction->product->name ?? 'N/A' }}</td>
+                                {{-- Pastikan Controller mengirimkan nama produk, jika tidak ada relasi gunakan fallback --}}
+                                <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-300">{{ $transaction->product->name ?? $transaction->name ?? 'N/A' }}</td>
                                 <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-300 hidden sm:table-cell">Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</td>
-                                <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-300 hidden md:table-cell">Rp {{ number_format($transaction->total_hpp, 0, ',', '.') }}</td>
                                 <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-400">{{ $transaction->created_at->format('d M Y, H:i') }}</td>
                                 <td class="whitespace-nowrap py-4 px-4 text-sm">
                                     <form action="{{ route('transactions.destroy', $transaction) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus data ini?');">
