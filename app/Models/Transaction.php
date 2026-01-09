@@ -8,6 +8,7 @@ use App\Models\Product;
 class Transaction extends Model
 {
     protected $fillable = [
+        'name',
         'order_id',
         'product_id',
         'quantity',
