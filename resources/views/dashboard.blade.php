@@ -44,7 +44,7 @@
                                             {{ $transaction->id }}
                                         </th>
                                         <td class="px-6 py-4">
-                                            {{ $transaction->product->name }}
+                                            {{ $transaction->product->name ?? $transaction->name }}
                                         </td>
                                         <td class="px-6 py-4">
                                             {{ $transaction->quantity }}
