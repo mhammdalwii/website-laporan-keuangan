@@ -62,22 +62,10 @@
         }
 
         @keyframes slide-in-out {
-            0% {
-                transform: translateY(100%);
-                opacity: 0;
-            }
-            10% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            90% {
-                transform: translateY(0);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(100%);
-                opacity: 0;
-            }
+            0% { transform: translateY(100%); opacity: 0; }
+            10% { transform: translateY(0); opacity: 1; }
+            90% { transform: translateY(0); opacity: 1; }
+            100% { transform: translateY(100%); opacity: 0; }
         }
     </style>
 </head>
@@ -104,24 +92,39 @@
         <div class="max-w-2xl mx-auto">
             <main class="glass-container mb-12">
                 <h2 class="text-2xl font-bold text-white mb-6 text-center"><i class="fas fa-shopping-cart mr-2"></i> Input Pengeluaran</h2>
-                <form action="{{ route('transactions.store') }}" method="POST" class="space-y-6">
+
+                <form action="{{ route('transactions.store') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
 
-                    {{-- BAGIAN SELECT OPTION SUDAH DIHAPUS DI SINI --}}
-
                     <div class="relative">
-                        <i class="fas fa-tag absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                         <input type="text" id="name" name="name" placeholder="Nama Item / Bahan Baku" required class="w-full input-glass pl-10">
                     </div>
+
                     <div class="relative">
-                         <i class="fas fa-dollar-sign absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                         <input type="number" id="total_price" name="total_price" placeholder="Total Biaya (Rp)" required min="0" class="w-full input-glass pl-10">
                     </div>
-                    <button type="submit" class="w-full btn-glow bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-bold py-3 px-4 rounded-lg">
+
+                    <div>
+                        <label class="block text-gray-300 mb-2 font-medium">Upload Nota Pembelian</label>
+                        <input type="file" name="image" class="block w-full text-sm text-gray-300
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-full file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-sky-600 file:text-white
+                            hover:file:bg-sky-700
+                            cursor-pointer
+                        ">
+                        @error('image')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="w-full btn-glow bg-gradient-to-r from-sky-500 to-cyan-500 hover:from-sky-600 hover:to-cyan-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg">
                         Simpan Pengeluaran
                     </button>
                 </form>
-                 @if ($errors->any() && $errors->hasBag('default'))
+
+                @if ($errors->any() && $errors->hasBag('default'))
                     <div class="mt-4 bg-red-900/50 border border-red-500 text-red-300 px-4 py-3 rounded-md">
                         <ul>
                             @foreach ($errors->all() as $error)
@@ -141,6 +144,9 @@
                         <tr>
                             <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-300">Item / Bahan</th>
                             <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-300 hidden sm:table-cell">Total Biaya</th>
+
+                            <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-300">Bukti</th>
+
                             <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-300">Tanggal</th>
                             <th scope="col" class="py-3.5 px-4 text-left text-sm font-semibold text-gray-300">Aksi</th>
                         </tr>
@@ -148,10 +154,34 @@
                     <tbody class="divide-y divide-gray-800">
                         @forelse($transactions as $transaction)
                             <tr class="hover:bg-gray-800/40 transition-colors duration-200">
-                                {{-- Pastikan Controller mengirimkan nama produk, jika tidak ada relasi gunakan fallback --}}
-                                <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-300">{{ $transaction->product->name ?? $transaction->name ?? 'N/A' }}</td>
-                                <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-300 hidden sm:table-cell">Rp {{ number_format($transaction->total_price, 0, ',', '.') }}</td>
-                                <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-400">{{ $transaction->created_at->format('d M Y, H:i') }}</td>
+
+                                <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-300">
+                                    {{ $transaction->product->name ?? $transaction->name ?? 'N/A' }}
+                                </td>
+
+                                <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-300 hidden sm:table-cell">
+                                    Rp {{ number_format($transaction->total_price, 0, ',', '.') }}
+                                </td>
+
+                                <td class="whitespace-nowrap py-4 px-4">
+                                    @if($transaction->image)
+                                        <a href="{{ asset('storage/' . $transaction->image) }}" target="_blank" class="group relative block w-12 h-12">
+                                            <img src="{{ asset('storage/' . $transaction->image) }}"
+                                                 alt="Bukti"
+                                                 class="w-12 h-12 object-cover rounded-md border border-gray-600 group-hover:border-sky-500 transition-colors">
+                                            <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all rounded-md flex items-center justify-center">
+                                                <i class="fas fa-search-plus text-white opacity-0 group-hover:opacity-100 text-xs"></i>
+                                            </div>
+                                        </a>
+                                    @else
+                                        <span class="text-xs text-gray-500 italic">Tanpa Bukti</span>
+                                    @endif
+                                </td>
+
+                                <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-400">
+                                    {{ $transaction->created_at->format('d M Y, H:i') }}
+                                </td>
+
                                 <td class="whitespace-nowrap py-4 px-4 text-sm">
                                     <form action="{{ route('transactions.destroy', $transaction) }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus data ini?');">
                                         @csrf

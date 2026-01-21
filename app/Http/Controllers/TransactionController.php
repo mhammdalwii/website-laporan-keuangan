@@ -19,36 +19,40 @@ class TransactionController extends Controller
 
     public function create()
     {
-        $products = Product::all();
-        $manualTransactions = Transaction::with('product')->where('payment_type', 'manual')->latest()->get();
-        return view('input_data', [
-            'products' => $products,
-            'transactions' => $manualTransactions
-        ]);
+    // Pastikan ada query ini untuk mengambil data ke view
+    // 'latest()' agar data terbaru muncul paling atas
+    $transactions = Transaction::where('status', 'success')->latest()->get();
+
+    return view('input_data', compact('transactions'));
     }
 
     public function store(Request $request)
-    {
+{
+    // 1. Validasi
+    $request->validate([
+        'name' => 'required',
+        'total_price' => 'required|numeric',
+        // Validasi gambar: wajib format gambar, maks 2MB
+        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+    ]);
 
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'total_price' => 'required|numeric|min:0',
-        ]);
-
-        Transaction::create([
-            'order_id' => 'EXP-' . time(),
-            'name' => $request->name,
-            'total_price' => $request->total_price,
-            'product_id' => null,
-            'quantity' => 1,
-            'total_hpp' => 0,
-            'status' => 'success',
-            'payment_type' => 'manual',
-            'payment_response' => null,
-        ]);
-
-        return redirect()->back()->with('success', 'Pengeluaran berhasil disimpan!');
+    // 2. Cek apakah user mengupload gambar
+    $imagePath = null;
+    if ($request->hasFile('image')) {
+        $imagePath = $request->file('image')->store('transactions', 'public');
     }
+
+    // 3. Simpan ke Database
+    Transaction::create([
+        'order_id' => 'MANUAL-' . time(), // Contoh hasil: MANUAL-1705638291
+        'name' => $request->name,
+        'total_price' => $request->total_price,
+        'status' => 'success',
+        'image' => $imagePath,
+    ]);
+
+    return redirect()->route('dashboard')->with('success', 'Data berhasil disimpan!');
+}
 
     public function show(Transaction $transaction)
     {
