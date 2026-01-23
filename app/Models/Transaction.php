@@ -17,6 +17,7 @@ class Transaction extends Model
         'status',
         'payment_type',
         'payment_response',
+        'image',
     ];
 
     public function product()

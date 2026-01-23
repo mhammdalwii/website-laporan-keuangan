@@ -10,7 +10,7 @@ use App\Http\Controllers\MidtransController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\WithdrawalController;
 
-Route::get('/', [TransactionController::class, 'index'])->name('welcome');
+Route::get('/welcome', [TransactionController::class, 'index'])->name('welcome');
 
 Route::get('/laporan', function () {
     return view('laporan');
@@ -37,7 +37,7 @@ Route::post('/midtrans/notification', [MidtransController::class, 'notification'
 // Grup Rute untuk semua halaman yang memerlukan login
 Route::middleware('auth')->group(function () {
     // Rute dasbor sekarang menunjuk ke DashboardController dan dilindungi oleh middleware
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     // Rute profil bawaan dari Laravel Breeze
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');

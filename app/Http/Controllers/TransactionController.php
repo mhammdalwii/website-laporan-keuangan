@@ -4,65 +4,71 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
-use App\Models\Product;
-use Illuminate\Support\Facades\Auth;
-use Midtrans\Snap;
-use Midtrans\Config;
+use Illuminate\Support\Facades\Storage;
 
 class TransactionController extends Controller
 {
     public function index()
     {
-        $transactions = Transaction::with('product')->where('payment_type', '!=', 'manual')->latest()->get();
-        return view('welcome', ['transactions' => $transactions]);
+        $transactions = Transaction::with('product')
+            ->where('payment_type', '!=', 'manual')
+            ->latest()
+            ->get();
+
+        return view('welcome', compact('transactions'));
     }
 
     public function create()
     {
-    // Pastikan ada query ini untuk mengambil data ke view
-    // 'latest()' agar data terbaru muncul paling atas
-    $transactions = Transaction::where('status', 'success')->latest()->get();
+        $transactions = Transaction::where('status', 'success')
+            ->latest()
+            ->get();
 
-    return view('input_data', compact('transactions'));
+        return view('input_data', compact('transactions'));
     }
 
     public function store(Request $request)
-{
-    // 1. Validasi
-    $request->validate([
-        'name' => 'required',
-        'total_price' => 'required|numeric',
-        // Validasi gambar: wajib format gambar, maks 2MB
-        'image' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-    ]);
-
-    // 2. Cek apakah user mengupload gambar
-    $imagePath = null;
-    if ($request->hasFile('image')) {
-        $imagePath = $request->file('image')->store('transactions', 'public');
-    }
-
-    // 3. Simpan ke Database
-    Transaction::create([
-        'order_id' => 'MANUAL-' . time(), // Contoh hasil: MANUAL-1705638291
-        'name' => $request->name,
-        'total_price' => $request->total_price,
-        'status' => 'success',
-        'image' => $imagePath,
-    ]);
-
-    return redirect()->route('dashboard')->with('success', 'Data berhasil disimpan!');
-}
-
-    public function show(Transaction $transaction)
     {
+        // 1️⃣ Validasi
+        $request->validate([
+            'name'        => 'required|string|max:255',
+            'total_price'=> 'required|numeric|min:0',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
 
-        return view('transactions.show', compact('transaction'));
+        // 2️⃣ Upload bukti transaksi
+        $imagePath = null;
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')
+                ->store('bukti-transaksi', 'public');
+        }
+
+        // 3️⃣ Simpan ke DB
+        Transaction::create([
+            'order_id'     => 'MANUAL-' . time(),
+            'name'         => $request->name,
+            'quantity'     => 1,
+            'total_price' => $request->total_price,
+            'total_hpp'    => 0,
+            'status'       => 'success',
+            'payment_type' => 'manual',
+            'image'        => $imagePath,
+        ]);
+
+        return redirect()
+            ->route('transactions.create')
+            ->with('success', 'Data berhasil disimpan!');
     }
 
     public function destroy(Transaction $transaction)
     {
+        // 🗑️ Hapus file bukti jika ada
+        if ($transaction->image) {
+            Storage::disk('public')->delete($transaction->image);
+        }
+
         $transaction->delete();
-        return redirect()->back()->with('success', 'Data berhasil dihapus.');
+
+        return back()->with('success', 'Data berhasil dihapus.');
     }
 }

@@ -7,6 +7,7 @@
             src="https://app.sandbox.midtrans.com/snap/snap.js"
             data-client-key="{{ config('midtrans.client_key') }}"></script>
     <style>
+        /* contoh styling untuk tombol bayar*/
         body {
             font-family: Arial, sans-serif;
             display: flex;
