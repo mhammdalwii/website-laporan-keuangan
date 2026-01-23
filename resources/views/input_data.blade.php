@@ -84,7 +84,7 @@
         <header class="mb-10 text-center">
             <h1 class="text-4xl sm:text-5xl font-bold text-white tracking-tight">Manajemen Keuangan</h1>
             <p class="text-gray-400 mt-3 max-w-xl mx-auto">Catat pengeluaran bahan baku dengan mudah.</p>
-            <a href="{{ url('/') }}" class="mt-6 inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-5 rounded-lg transition-transform transform hover:scale-105 duration-300 btn-glow">
+            <a href="{{ url('welcome') }}" class="mt-6 inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-5 rounded-lg transition-transform transform hover:scale-105 duration-300 btn-glow">
                 <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
             </a>
         </header>

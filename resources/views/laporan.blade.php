@@ -56,11 +56,11 @@
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         <!-- Header -->
         <header class="mb-8 flex justify-between items-center fade-in">
-            <a href="/" class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-md transition duration-300 flex items-center">
+             <a href="{{ url('welcome') }}" class="bg-gray-700 hover:bg-gray-600 text-white text-sm font-bold py-2 px-4 rounded-md transition duration-300 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                 </svg>
-                Kembali ke Dasbor
+                Kembali ke Dashboard
             </a>
             <div class="text-center">
                 <h1 class="text-4xl font-bold text-white">Laporan Pendapatan</h1>
