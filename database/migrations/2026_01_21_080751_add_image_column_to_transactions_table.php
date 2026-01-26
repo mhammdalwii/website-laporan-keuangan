@@ -6,18 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-   public function up()
-{
-    Schema::table('transactions', function (Blueprint $table) {
-        // Kita set nullable agar gambar tidak wajib diisi
-        $table->string('image')->nullable()->after('total_price');
-    });
-}
+    public function up(): void
+    {
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->string('image')->nullable()->after('total_hpp');
+        });
+    }
 
-public function down()
-{
-    Schema::table('transactions', function (Blueprint $table) {
-        $table->dropColumn('image');
+    public function down(): void
+    {
+        Schema::table('transactions', function (Blueprint $table) {
+            $table->dropColumn('image');
         });
     }
 };
