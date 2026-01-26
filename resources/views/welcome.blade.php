@@ -85,8 +85,15 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .fade-in { animation: fadeIn 0.5s ease-out forwards; }
@@ -263,7 +270,8 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="5" class="text-center py-6 px-4">Belum ada riwayat transaksi.</td>
+                                                <td colspan="5" class="text-center py-6 px-4">Belum ada riwayat
+                                                    transaksi.</td>
                                             </tr>
                                         @endforelse
                                     </tbody>
