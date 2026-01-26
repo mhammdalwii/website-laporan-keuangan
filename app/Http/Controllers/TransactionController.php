@@ -18,6 +18,13 @@ class TransactionController extends Controller
         return view('welcome', compact('transactions'));
     }
 
+    public function laporan()
+    {
+        $transactions = \App\Models\Transaction::latest()->get();
+
+        return view('laporan', compact('transactions'));
+    }
+
     public function create()
     {
         $transactions = Transaction::where('status', 'success')
