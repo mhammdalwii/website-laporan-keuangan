@@ -17,7 +17,7 @@ use App\Http\Controllers\WithdrawalController;
 // Redirect root
 Route::get('/', function () {
     return Auth::check()
-        ? redirect()->route('transactions.create')
+        ? redirect()->route('welcome')
         : redirect()->route('login');
 });
 
