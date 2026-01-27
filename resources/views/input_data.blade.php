@@ -120,7 +120,7 @@
         <header class="mb-10 text-center">
             <h1 class="text-4xl sm:text-5xl font-bold text-gray-800 dark:text-white tracking-tight">Manajemen Keuangan</h1>
             <p class="text-gray-500 dark:text-gray-400 mt-3 max-w-xl mx-auto">Catat pengeluaran bahan baku dengan mudah.</p>
-            <a href="{{ url('welcome') }}" class="mt-6 inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-5 rounded-lg transition-transform transform hover:scale-105 duration-300 btn-glow shadow-md">
+            <a href="{{ route('welcome') }}" class="mt-6 inline-flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white font-semibold py-2 px-5 rounded-lg transition-transform transform hover:scale-105 duration-300 btn-glow shadow-md">
                 <i class="fas fa-arrow-left"></i> Kembali ke Dashboard
             </a>
         </header>
@@ -245,4 +245,4 @@
         </section>
     </div>
 </body>
-</html> 
+</html>
