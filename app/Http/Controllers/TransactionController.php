@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class TransactionController extends Controller
 {
@@ -20,8 +20,7 @@ class TransactionController extends Controller
 
     public function laporan()
     {
-        $transactions = \App\Models\Transaction::latest()->get();
-
+        $transactions = Transaction::latest()->get();
         return view('laporan', compact('transactions'));
     }
 
@@ -36,26 +35,35 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        // 1️⃣ Validasi
         $request->validate([
-            'name'        => 'required|string|max:255',
-            'total_price'=> 'required|numeric|min:0',
-            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'name'         => 'required|string|max:255',
+            'total_price'  => 'required|numeric|min:0',
+            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // 2️⃣ Upload bukti transaksi
         $imagePath = null;
+
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')
-                ->store('bukti-transaksi', 'public');
+            $file = $request->file('image');
+
+            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
+
+            $destination = public_path('bukti-transaksi');
+
+            if (!File::exists($destination)) {
+                File::makeDirectory($destination, 0755, true);
+            }
+
+            $file->move($destination, $filename);
+
+            $imagePath = 'bukti-transaksi/' . $filename;
         }
 
-        // 3️⃣ Simpan ke DB
         Transaction::create([
             'order_id'     => 'MANUAL-' . time(),
             'name'         => $request->name,
             'quantity'     => 1,
-            'total_price' => $request->total_price,
+            'total_price'  => $request->total_price,
             'total_hpp'    => 0,
             'status'       => 'success',
             'payment_type' => 'manual',
@@ -69,9 +77,11 @@ class TransactionController extends Controller
 
     public function destroy(Transaction $transaction)
     {
-        // 🗑️ Hapus file bukti jika ada
         if ($transaction->image) {
-            Storage::disk('public')->delete($transaction->image);
+            $filePath = public_path($transaction->image);
+            if (file_exists($filePath)) {
+                unlink($filePath);
+            }
         }
 
         $transaction->delete();

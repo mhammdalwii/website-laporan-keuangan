@@ -269,20 +269,13 @@
                                     Rp {{ number_format($transaction->total_price, 0, ',', '.') }}
                                 </td>
                                 <td class="whitespace-nowrap py-4 px-4">
-                                    @if ($transaction->image && Storage::disk('public')->exists($transaction->image))
-                                        <a href="{{ Storage::url($transaction->image) }}" target="_blank"
-                                            class="group relative block w-10 h-10">
-                                            <img src="{{ Storage::url($transaction->image) }}" alt="Bukti"
-                                                class="w-10 h-10 object-cover rounded-md
-                   border border-gray-200 dark:border-gray-600
-                   group-hover:border-sky-500 transition-colors shadow-sm">
+                                    @if ($transaction->image && file_exists(public_path($transaction->image)))
+                                        <a href="{{ asset($transaction->image) }}" target="_blank">
+                                            <img src="{{ asset($transaction->image) }}"
+                                                class="w-10 h-10 object-cover rounded border">
                                         </a>
                                     @else
-                                        <span
-                                            class="inline-flex items-center px-2 py-1 rounded text-xs font-medium
-                 bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
-                                            File tidak tersedia
-                                        </span>
+                                        <span class="text-xs text-gray-400">Tidak ada</span>
                                     @endif
                                 </td>
                                 <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-500 dark:text-gray-400">
