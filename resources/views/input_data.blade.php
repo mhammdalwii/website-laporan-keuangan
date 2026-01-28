@@ -269,13 +269,11 @@
                                     Rp {{ number_format($transaction->total_price, 0, ',', '.') }}
                                 </td>
                                 <td class="whitespace-nowrap py-4 px-4">
-                                    @if ($transaction->image && file_exists(public_path($transaction->image)))
+                                    @if ($transaction->image)
                                         <a href="{{ asset($transaction->image) }}" target="_blank">
                                             <img src="{{ asset($transaction->image) }}"
                                                 class="w-10 h-10 object-cover rounded border">
                                         </a>
-                                    @else
-                                        <span class="text-xs text-gray-400">Tidak ada</span>
                                     @endif
                                 </td>
                                 <td class="whitespace-nowrap py-4 px-4 text-sm text-gray-500 dark:text-gray-400">

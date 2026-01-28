@@ -45,7 +45,6 @@ class TransactionController extends Controller
 
         if ($request->hasFile('image')) {
             $file = $request->file('image');
-
             $filename = uniqid() . '.' . $file->getClientOriginalExtension();
 
             $destination = public_path('bukti-transaksi');
