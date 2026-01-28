@@ -270,19 +270,17 @@
                                 </td>
                                 <td class="whitespace-nowrap py-4 px-4">
                                     @if ($transaction->image && Storage::disk('public')->exists($transaction->image))
-                                        <a href="{{ asset('storage/' . $transaction->image) }}" target="_blank"
+                                        <a href="{{ Storage::url($transaction->image) }}" target="_blank"
                                             class="group relative block w-10 h-10">
-                                            <img src="{{ asset('storage/' . $transaction->image) }}" alt="Bukti"
+                                            <img src="{{ Storage::url($transaction->image) }}" alt="Bukti"
                                                 class="w-10 h-10 object-cover rounded-md
-                       border border-gray-200 dark:border-gray-600
-                       group-hover:border-sky-500 transition-colors shadow-sm">
+                   border border-gray-200 dark:border-gray-600
+                   group-hover:border-sky-500 transition-colors shadow-sm">
                                         </a>
                                     @else
                                         <span
-                                            class="inline-flex items-center px-2 py-1 rounded
-                   text-xs font-medium
-                   bg-gray-100 text-gray-600
-                   dark:bg-gray-700 dark:text-gray-400">
+                                            class="inline-flex items-center px-2 py-1 rounded text-xs font-medium
+                 bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400">
                                             File tidak tersedia
                                         </span>
                                     @endif
