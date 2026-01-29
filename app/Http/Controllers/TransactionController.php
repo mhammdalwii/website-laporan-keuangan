@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage; // Pastikan import ini ada
 
 class TransactionController extends Controller
 {
@@ -36,26 +36,15 @@ class TransactionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'         => 'required|string|max:255',
-            'total_price'  => 'required|numeric|min:0',
-            'image'        => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+            'name'        => 'required|string|max:255',
+            'total_price' => 'required|numeric|min:0',
+            'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $imagePath = null;
 
         if ($request->hasFile('image')) {
-            $file = $request->file('image');
-            $filename = uniqid() . '.' . $file->getClientOriginalExtension();
-
-            $destination = public_path('bukti-transaksi');
-
-            if (!File::exists($destination)) {
-                File::makeDirectory($destination, 0755, true);
-            }
-
-            $file->move($destination, $filename);
-
-            $imagePath = 'bukti-transaksi/' . $filename;
+            $imagePath = $request->file('image')->store('bukti-transaksi', 'public');
         }
 
         Transaction::create([
@@ -76,11 +65,9 @@ class TransactionController extends Controller
 
     public function destroy(Transaction $transaction)
     {
+        // Hapus gambar dari storage jika ada
         if ($transaction->image) {
-            $filePath = public_path($transaction->image);
-            if (file_exists($filePath)) {
-                unlink($filePath);
-            }
+            Storage::disk('public')->delete($transaction->image);
         }
 
         $transaction->delete();
