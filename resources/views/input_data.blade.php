@@ -270,8 +270,8 @@
                                 </td>
                                 <td class="whitespace-nowrap py-4 px-4">
                                     @if ($transaction->image)
-                                        <a href="{{ asset('storage/' . $transaction->image) }}" target="_blank">
-                                            <img src="{{ asset('storage/' . $transaction->image) }}"
+                                        <a href="{{ asset('galeri/' . $transaction->image) }}" target="_blank">
+                                            <img src="{{ asset('galeri/' . $transaction->image) }}"
                                                 class="w-10 h-10 object-cover rounded border">
                                         </a>
                                     @else
