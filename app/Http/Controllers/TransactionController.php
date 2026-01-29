@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Transaction;
-use Illuminate\Support\Facades\Storage; // Pastikan import ini ada
+use Illuminate\Support\Facades\Storage;
+use Carbon\Carbon;
+
 
 class TransactionController extends Controller
 {
@@ -26,6 +28,7 @@ class TransactionController extends Controller
 
     public function create()
     {
+        // Menampilkan data yang sukses saja di bawah form input
         $transactions = Transaction::where('status', 'success')
             ->latest()
             ->get();
@@ -44,6 +47,11 @@ class TransactionController extends Controller
         $imagePath = null;
 
         if ($request->hasFile('image')) {
+
+        // 3️⃣ Ambil Waktu WITA (Makassar)
+        $wita = Carbon::now('Asia/Makassar');
+
+        // 4️⃣ Simpan ke DB
             $imagePath = $request->file('image')->store('bukti-transaksi', 'public');
         }
 
@@ -56,6 +64,8 @@ class TransactionController extends Controller
             'status'       => 'success',
             'payment_type' => 'manual',
             'image'        => $imagePath,
+            'created_at'   => $wita, // Set waktu manual ke WITA
+            'updated_at'   => $wita, // Set waktu manual ke WITA
         ]);
 
         return redirect()
