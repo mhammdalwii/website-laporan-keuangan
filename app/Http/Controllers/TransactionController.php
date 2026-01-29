@@ -5,7 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Transaction;
 use Illuminate\Support\Facades\Storage;
-use Carbon\Carbon; // 1. Tambahkan Import Carbon di sini
+use Carbon\Carbon;
+
 
 class TransactionController extends Controller
 {
@@ -21,8 +22,7 @@ class TransactionController extends Controller
 
     public function laporan()
     {
-        $transactions = \App\Models\Transaction::latest()->get();
-
+        $transactions = Transaction::latest()->get();
         return view('laporan', compact('transactions'));
     }
 
@@ -38,24 +38,23 @@ class TransactionController extends Controller
 
     public function store(Request $request)
     {
-        // 1️⃣ Validasi
         $request->validate([
             'name'        => 'required|string|max:255',
             'total_price' => 'required|numeric|min:0',
             'image'       => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // 2️⃣ Upload bukti transaksi
         $imagePath = null;
+
         if ($request->hasFile('image')) {
-            // Simpan ke folder 'public/bukti-transaksi'
-            $imagePath = $request->file('image')->store('bukti-transaksi', 'public');
-        }
 
         // 3️⃣ Ambil Waktu WITA (Makassar)
         $wita = Carbon::now('Asia/Makassar');
 
         // 4️⃣ Simpan ke DB
+            $imagePath = $request->file('image')->store('bukti-transaksi', 'public');
+        }
+
         Transaction::create([
             'order_id'     => 'MANUAL-' . time(),
             'name'         => $request->name,
@@ -76,7 +75,7 @@ class TransactionController extends Controller
 
     public function destroy(Transaction $transaction)
     {
-        // 🗑️ Hapus file bukti jika ada
+        // Hapus gambar dari storage jika ada
         if ($transaction->image) {
             Storage::disk('public')->delete($transaction->image);
         }

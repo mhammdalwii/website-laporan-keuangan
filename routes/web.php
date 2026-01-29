@@ -32,7 +32,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/welcome', [TransactionController::class, 'index'])
         ->name('welcome');
 
-        Route::get('/laporan', [TransactionController::class, 'laporan'])
+    Route::get('/laporan', [TransactionController::class, 'laporan'])
         ->name('laporan.index');
 
     // Input pengeluaran
@@ -61,6 +61,7 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+// contoh
 
 /*
 |--------------------------------------------------------------------------
@@ -74,4 +75,4 @@ Route::post('/midtrans/notification', [MidtransController::class, 'notification'
 | AUTH ROUTE (LOGIN, REGISTER, DLL)
 |--------------------------------------------------------------------------
 */
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
