@@ -142,13 +142,8 @@
                     <input type="checkbox" name="remember" class="mr-2 rounded border-gray-300 dark:border-gray-600 text-blue-600 focus:ring-blue-500 bg-white dark:bg-gray-700">
                     Ingat Saya
                 </label>
-                @if (Route::has('password.request'))
-                    <a href="{{ route('password.request') }}" class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors font-medium">
-                        Lupa Password?
-                    </a>
-                @endif
             </div>
-
+{{-- perubahang --}}
             <button type="submit" class="w-full btn-primary text-white font-semibold py-3 px-4 rounded-xl shadow-lg">
                 Masuk
             </button>
@@ -156,4 +151,4 @@
     </div>
 
 </body>
-</html> 
+</html>
